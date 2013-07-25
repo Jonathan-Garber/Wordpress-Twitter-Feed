@@ -11,3 +11,5 @@ Fetch and store feed data from a users wordpress account.
 
 == Description ==
 Wordpress Twitter Feed is a simple plugin that allows you to link to a Twitter account and pull in statuses from your feed. This plugin stores every piece of data per status to your wordpress database. This allows you to easily recall data and display it in a theme or other plugin.
+
+~Current Version:0.0.2~
