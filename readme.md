@@ -7,9 +7,7 @@ This is a small wordpress plugin that we use to simply fetch a twitter users sta
 ===
 Requirements
 ===
-1. A Twitter Application Consumer Key
-
-2. A Twitter Application Secret Key
+1. A Twitter Application to link this plugin to. This allows the plugin on your Wordpress site to fully communicate with the Twitter Account you choose to link to.
 
 ===
 Features
