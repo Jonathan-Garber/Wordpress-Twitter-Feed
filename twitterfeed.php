@@ -126,7 +126,7 @@ add_action( 'init', 'twitter_register_post_type' );
 
 if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
 	
-	include_once 'functions/git/updater.php';
+	include_once 'functions/updater.php';
     $config = array(
         'slug' => plugin_basename(__FILE__),
         'proper_folder_name' => 'twitterfeed',
