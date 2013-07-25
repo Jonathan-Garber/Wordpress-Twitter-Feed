@@ -10,7 +10,18 @@
 
 */
 
-include 'functions/functions.php';
+/*
+Requires
+*/
+require_once 'functions/functions.php';
+
+
+/*
+Setup Git Updater
+*/
+add_action( 'init', 'github_plugin_updater_test_init' );
+
+
 
 add_filter('query_vars','tweet_add_trigger');
 function tweet_add_trigger($vars) {
