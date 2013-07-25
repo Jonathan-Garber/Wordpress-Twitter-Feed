@@ -15,14 +15,6 @@ Requires
 */
 require_once 'functions/functions.php';
 
-
-/*
-Setup Git Updater
-*/
-add_action( 'init', 'twitter_feed_git_init' );
-
-
-
 add_filter('query_vars','tweet_add_trigger');
 function tweet_add_trigger($vars) {
     $vars[] = 'tweety_auth';
@@ -131,3 +123,22 @@ function twitter_register_post_type() {
   flush_rewrite_rules();
 }
 add_action( 'init', 'twitter_register_post_type' );
+
+if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
+	
+	include_once 'functions/git/updater.php';
+    $config = array(
+        'slug' => plugin_basename(__FILE__),
+        'proper_folder_name' => 'twitterfeed',
+        'api_url' => 'https://api.github.com/repos/Jonathan-Garber/Wordpress-Twitter-Feed',
+        'raw_url' => 'https://raw.github.com/Jonathan-Garber/Wordpress-Twitter-Feed/master',
+        'github_url' => 'https://github.com/Jonathan-Garber/Wordpress-Twitter-Feed',
+        'zip_url' => 'https://github.com/Jonathan-Garber/Wordpress-Twitter-Feed/zipball/master',
+        'sslverify' => true,
+        'requires' => '3.5.2',
+        'tested' => '3.5.2',
+        'readme' => 'readme.txt',
+        'access_token' => '',
+    );
+    new WP_GitHub_Updater($config);
+}

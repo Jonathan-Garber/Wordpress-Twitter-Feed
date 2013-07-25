@@ -1,26 +1,6 @@
 <?php
 $tweet_post_type = 'twitter';
 
-function twitter_feed_git_init() {
-	require_once 'git/updater.php';
-	if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
-	    $config = array(
-	        'slug' => plugin_basename(__FILE__),
-	        'proper_folder_name' => 'Wordpress-Twitter-Feed',
-	        'api_url' => 'https://api.github.com/repos/Jonathan-Garber/Wordpress-Twitter-Feed',
-	        'raw_url' => 'https://raw.github.com/Jonathan-Garber/Wordpress-Twitter-Feed/master',
-	        'github_url' => 'https://github.com/Jonathan-Garber/Wordpress-Twitter-Feed',
-	        'zip_url' => 'https://github.com/Jonathan-Garber/Wordpress-Twitter-Feed/zipball/master',
-	        'sslverify' => true,
-	        'requires' => '3.5.2',
-	        'tested' => '3.5.2',
-	        'readme' => 'readme.txt',
-	        'access_token' => '',
-	    );
-	    new WP_GitHub_Updater($config);
-	}
-}
-
 // Return raw twitter data
 function tweet_raw_tweets(){
 	global $tweet_post_type;
