@@ -1,4 +1,3 @@
-~Version~Current Version:0.0.2~
 ===
 Wordpress Twitter Feed
 ===
@@ -18,3 +17,6 @@ Features
 2. Display raw status data using function tweet_raw_tweets();
 
 3. Display simple list of tweets with user icon and status using function tweet_show_tweets();
+
+
+~Version~Current Version:0.0.2~
