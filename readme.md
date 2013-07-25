@@ -1,3 +1,4 @@
+~Version~Current Version:0.0.2~
 ===
 Wordpress Twitter Feed
 ===
