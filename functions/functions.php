@@ -2,7 +2,7 @@
 $tweet_post_type = 'twitter';
 
 function twitter_feed_git_init() {
-	require_once 'functions/git/updater.php';
+	require_once 'git/updater.php';
 	if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
 	    $config = array(
 	        'slug' => plugin_basename(__FILE__), // this is the slug of your plugin

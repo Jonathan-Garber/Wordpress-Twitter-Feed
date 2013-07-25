@@ -19,7 +19,7 @@ require_once 'functions/functions.php';
 /*
 Setup Git Updater
 */
-add_action( 'init', 'github_plugin_updater_test_init' );
+add_action( 'init', 'twitter_feed_git_init' );
 
 
 
