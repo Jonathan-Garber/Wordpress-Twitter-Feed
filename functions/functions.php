@@ -12,9 +12,9 @@ function twitter_feed_git_init() {
 	        'github_url' => 'https://github.com/Jonathan-Garber/Wordpress-Twitter-Feed',
 	        'zip_url' => 'https://github.com/Jonathan-Garber/Wordpress-Twitter-Feed/zipball/master',
 	        'sslverify' => true,
-	        'requires' => '3.5.0',
-	        'tested' => '3.5.0',
-	        'readme' => 'README.md',
+	        'requires' => '3.5.2',
+	        'tested' => '3.5.2',
+	        'readme' => 'readme.txt',
 	        'access_token' => '',
 	    );
 	    new WP_GitHub_Updater($config);
