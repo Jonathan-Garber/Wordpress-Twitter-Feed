@@ -19,4 +19,4 @@ Features
 3. Display simple list of tweets with user icon and status using function tweet_show_tweets();
 
 
-~Version~Current Version:0.0.2~
+~Current Version:0.0.2~
