@@ -29,7 +29,7 @@ A: You can create a custom twitter application to use for accessing your Twitter
 
 Q: I get an error during Authorizing Wordpress-Twitter-Feed "There is no request token for this page" or other Authorization errors.
 
-A: Please be sure that your custom Twitter Application has the checkbox "Allow this application to be used to Sign in with Twitter" checked & that you have assigned a "Callback URL" to your plugin. This URL can simply be the url to your Wordpress site.
+A: Please be sure that you have assigned a "Callback URL" to your plugin. Wordpress Twitter Feed will use its own URL during authentication. However Twitter still requires the "Callback URL" be set to a valid URL. This URL can simply be the url to your Wordpress site.
 
 ===
 Version History
