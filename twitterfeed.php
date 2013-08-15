@@ -6,7 +6,7 @@
 	Description: Custom plugin to pull in your Twitter Feed
 	Author: Jonathan-Garber
 	Author URI: http://github.com/Jonathan-Garber
-	Version: 1.0.1
+	Version: 1.0.2
 
 */
 
