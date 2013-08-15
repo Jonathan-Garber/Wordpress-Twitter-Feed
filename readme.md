@@ -17,3 +17,13 @@ Features
 2. Display raw status data using function tweet_raw_tweets();
 
 3. Display simple list of tweets with user icon and status using function tweet_show_tweets();
+
+===
+FAQ
+===
+
+Q: Where do I go to create a twitter application for use with this plugin
+A: You can create a custom twitter application to use for accessing your Twitter account at http://dev.twitter.com
+
+Q: I get an error during Authorizing Wordpress-Twitter-Feed "There is no request token for this page" or other Authorization errors.
+A: Please be sure that your custom Twitter Application has the checkbox "Allow this application to be used to Sign in with Twitter" checked & that you have assigned a "Callback URL" to your plugin. This URL can simply be the url to your Wordpress site.
