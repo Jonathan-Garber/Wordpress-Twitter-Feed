@@ -24,7 +24,7 @@ function wtf_activate(){
 
 	//no last stored version so we start versioning now.
 	if (empty($lastVersion)){
-		$lastVersion = $version
+		$lastVersion = $version;
 	}	
 }
 
