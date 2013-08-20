@@ -1,19 +1,19 @@
 <?php
-$tweet_post_type = 'twitter';
+$wtf_post_type = 'wtf_twitter';
 
 // Return raw twitter data
-function tweet_raw_tweets(){
-	global $tweet_post_type;
+function wtf_raw_tweets(){
+	global $wtf_post_type;
 
 		$args = array(
 			'numberposts' => '-1',
-			'post_type' => $tweet_post_type,
+			'post_type' => $wtf_post_type,
 			'orderby' => 'title',
 			'order' => 'desc',
 			'post_status' => 'publish',
 			'meta_query' => array(
 				array(
-					'key' => 'tweet_data',
+					'key' => 'wtf_data',
 					'value' => '',
 					'compare' => '!=',
 				)
@@ -24,7 +24,7 @@ function tweet_raw_tweets(){
 		if (!empty($posts)){		
 			foreach ($posts as $p){
 				$post_id = $p->ID;
-				$twitter_data = get_post_meta($post_id, 'tweet_data');
+				$twitter_data = get_post_meta($post_id, 'wtf_data');
 				print_r($twitter_data);
 			}
 		}else{
@@ -34,18 +34,17 @@ function tweet_raw_tweets(){
 }
 
 
-function tweet_tweet_flush(){
-	global $tweet_post_type;
-		$username = get_option('tweety_screenname');
+function wtf_flush(){
+	global $wtf_post_type;
 		$args = array(
 			'numberposts' => '-1',
-			'post_type' => $tweet_post_type,
+			'post_type' => $wtf_post_type,
 			'orderby' => 'title',
 			'order' => 'desc',
 			'post_status' => 'publish',
 			'meta_query' => array(
 				array(
-					'key' => 'tweet_data',
+					'key' => 'wtf_data',
 					'value' => '',
 					'compare' => '!=',
 				)
@@ -59,24 +58,24 @@ function tweet_tweet_flush(){
 		}
 		$date = date('l F jS Y');
 		$time = date('g:i:s a');
-		update_option(twitter_flushrefresh_status, 'Flushed on '.$date.' at '.$time);
+		update_option('wtf_flushrefresh_status', 'Flushed on '.$date.' at '.$time);
 		
 		//removes last ID imported so we can get a entire new list when we refresh them
-		delete_option('tweety_'.$username.'_id');
+		delete_option('wtf_last_id');
 }
 
-function tweet_show_tweets(){
-	global $tweet_post_type;
+function wtf_show_tweets(){
+	global $wtf_post_type;
 
 		$args = array(
 			'numberposts' => '-1',
-			'post_type' => $tweet_post_type,
+			'post_type' => $wtf_post_type,
 			'orderby' => 'title',
 			'order' => 'desc',
 			'post_status' => 'publish',
 			'meta_query' => array(
 				array(
-					'key' => 'tweet_data',
+					'key' => 'wtf_data',
 					'value' => '',
 					'compare' => '!=',
 				)
@@ -86,7 +85,7 @@ function tweet_show_tweets(){
 		
 		foreach ($posts as $post){
 			$post_id = $post->ID;			
-			$twitter_array = get_post_meta($post_id, 'tweet_data', true);
+			$twitter_array = get_post_meta($post_id, 'wtf_data', true);
 			$tweet = $twitter_array->text;
 			$twitter_image = $twitter_array->user->profile_image_url;
 			$is_retweet = $twitter_array->retweeted_status->user->rofile_image_url;			
@@ -101,7 +100,7 @@ function tweet_show_tweets(){
 
 }
 
-function tweet_get_retweets($id){
+function wtf_get_retweets($id){
 $count = 100;
 	$connectionSession = curl_init(); //open connection
 	$url = 'https://api.twitter.com/1.1/statuses/retweets/'.$id.'.json?count='.$number;
@@ -126,17 +125,16 @@ $count = 100;
 
 }
 
-function twitter_update_auto(){
+function wtf_update_auto(){
 	$limit = '4';
-	$username = get_option('tweety_screenname');
 	include 'oauth/twitteroauth.php';
-	$consumer_key = get_option('tweety_consumer_key');
-	$consumer_secret = get_option('tweety_consumer_secret');
-	$tweety_token_array = get_option('tweety_token_array');
-	$token = $tweety_token_array[token];
-	$token_secret = $tweety_token_array[token_secret];
+	$consumer_key = get_option('wtf_consumer_key');
+	$consumer_secret = get_option('wtf_consumer_secret');
+	$wtf_token_array = get_option('wtf_token_array');
+	$token = $wtf_token_array[token];
+	$token_secret = $wtf_token_array[token_secret];
 	
-	$last_id = get_option('tweety_'.$username.'_id');	
+	$last_id = get_option('wtf_last_id');	
 	
 $to = new TwitterOAuth($consumer_key, $consumer_secret, $token, $token_secret);
 	//if last id not empty we know this username has been called for feed before
@@ -157,14 +155,14 @@ $to = new TwitterOAuth($consumer_key, $consumer_secret, $token, $token_secret);
 	$first_id = $tweets[$counter]->id_str;
 	//if first id is empty there are no new tweets if its not empty we take that id
 	if ($first_id != ''){
-	update_option('tweety_'.$username.'_id', $first_id);
+	update_option('wtf_last_id', $first_id);
 	}
 	
 	//loop through tweets
 	while ( $counter < $tweetCount ) {
-		global $tweet_post_type;
+		global $wtf_post_type;
 
-		$tweet_id = $tweets[$counter]->id_str;	
+		$wtf_id = $tweets[$counter]->id_str;	
 		$profile_image = $tweets[$counter]->user->profile_image_url;
 		$convo_check = $tweets[$counter]->in_reply_to_status_id;		
 		$date = date("F j, Y G:i",strtotime($tweets[$counter]->created_at));
@@ -173,47 +171,42 @@ $to = new TwitterOAuth($consumer_key, $consumer_secret, $token, $token_secret);
 		$description = preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t<]*)#ise", "'\\1<a href=\"\\2\" >\\2</a>'", $description);
 		$description = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#ise", "'\\1<a href=\"http://\\2\" >\\2</a>'", $description);
 		
-		if ($tweet_id > $last_id){
+		if ($wtf_id > $last_id){
 		
 			$my_post = array(
-				 'post_type' => $tweet_post_type,
-				 'post_title' => $tweet_id,
+				 'post_type' => $wtf_post_type,
+				 'post_title' => $wtf_id,
 				 'post_status' => 'publish',
 				 'post_author' => 0,
 				 'post_category' => array(0)
 			  );
 
 			$post_id = wp_insert_post( $my_post );
-			update_post_meta($post_id, 'tweet_data', $tweets[$counter]);
+			update_post_meta($post_id, 'wtf_data', $tweets[$counter]);
 		
 			if ($convo_check != ''){
 				update_post_meta($post_id, 'is_convo', true);
 			}
 		}
 
-		//record last tweet id we found
-		if ($counter == $tweetCount ){
-			update_option('tweety_'.$username.'_id', $tweet_id);
-		}
-
 	    $counter++;
 	}
 		$date = date('l F jS Y');
 		$time = date('g:i:s a');
-		update_option(twitter_flushrefresh_status, 'Last automatic update ran on '.$date.' at '.$time);
+		update_option('wtf_flushrefresh_status', 'Last automatic update ran on '.$date.' at '.$time);
 }
 
 
-function tweet_tweet($limit) {
+function wtf_tweet($limit) {
 	include 'oauth/twitteroauth.php';
-	$username = get_option('tweety_screenname');
-	$consumer_key = get_option('tweety_consumer_key');
-	$consumer_secret = get_option('tweety_consumer_secret');
-	$tweety_token_array = get_option('tweety_token_array');
-	$token = $tweety_token_array[token];
-	$token_secret = $tweety_token_array[token_secret];
+	$consumer_key = get_option('wtf_consumer_key');
+	$consumer_secret = get_option('wtf_consumer_secret');
+	$wtf_token_array = get_option('wtf_token_array');
+	$token = $wtf_token_array[token];
+	$token_secret = $wtf_token_array[token_secret];
 	
-	$last_id = get_option('tweety_'.$username.'_id');	
+	$last_id = get_option('wtf_last_id');
+	echo $last_id.'<br/><br/>';
 
 $to = new TwitterOAuth($consumer_key, $consumer_secret, $token, $token_secret);
 	//if last id not empty we know this username has been called for feed before
@@ -221,7 +214,7 @@ $to = new TwitterOAuth($consumer_key, $consumer_secret, $token, $token_secret);
 		$tweets = $to->get('statuses/user_timeline', array (
 		'count' => 200
 		));
-	}else{		
+	}else{
 		$tweets = $to->get('statuses/user_timeline', array (
 		'since_id' => $last_id,
 		'count' => $limit
@@ -230,12 +223,17 @@ $to = new TwitterOAuth($consumer_key, $consumer_secret, $token, $token_secret);
 
 	$tweetCount = count($tweets);
 	$counter = 0;
+
+	$first_id = $tweets[$counter]->id_str;
+	if ($first_id != ''){
+		update_option('wtf_last_id', $first_id);
+	}	
 	
 	//loop through tweets
 	while ( $counter < $tweetCount ) {
-		global $tweet_post_type;
+		global $wtf_post_type;
 
-		$tweet_id = $tweets[$counter]->id_str;	
+		$wtf_id = $tweets[$counter]->id_str;	
 		$profile_image = $tweets[$counter]->user->profile_image_url;
 		$convo_check = $tweets[$counter]->in_reply_to_status_id;		
 		$date = date("F j, Y G:i",strtotime($tweets[$counter]->created_at));
@@ -244,31 +242,28 @@ $to = new TwitterOAuth($consumer_key, $consumer_secret, $token, $token_secret);
 		$description = preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t<]*)#ise", "'\\1<a href=\"\\2\" >\\2</a>'", $description);
 		$description = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#ise", "'\\1<a href=\"http://\\2\" >\\2</a>'", $description);
 		
-		if ($tweet_id > $last_id){		
+		if ($wtf_id > $last_id){		
 			$my_post = array(
-				 'post_type' => $tweet_post_type,
-				 'post_title' => $tweet_id,
+				 'post_type' => $wtf_post_type,
+				 'post_title' => $wtf_id,
 				 'post_status' => 'publish',
 				 'post_author' => 0,
 				 'post_category' => array(0)
 			  );
 
 			$post_id = wp_insert_post( $my_post );
-			update_post_meta($post_id, 'tweet_data', $tweets[$counter]);
+			update_post_meta($post_id, 'wtf_data', $tweets[$counter]);
 		
 			if ($convo_check != ''){
 				update_post_meta($post_id, 'is_convo', true);
 			}
 		}
-		//record last tweet id we found
-		if ($counter == $tweetCount ){
-			update_option('tweety_'.$username.'_id', $tweet_id);
-		}
 
 	    $counter++;
+
 	}
 		$date = date('l F jS Y');
 		$time = date('g:i:s a');
-		update_option(twitter_flushrefresh_status, 'Last manual update ran on '.$date.' at '.$time);
+		update_option('wtf_flushrefresh_status', 'Last manual update ran on '.$date.' at '.$time);
 }
 ?>

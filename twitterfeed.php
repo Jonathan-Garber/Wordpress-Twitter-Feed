@@ -6,7 +6,7 @@
 	Description: Custom plugin to pull in your Twitter Feed
 	Author: Jonathan-Garber
 	Author URI: http://github.com/Jonathan-Garber
-	Version: 1.0.2
+	Version: 2.0.0
 
 */
 
@@ -15,26 +15,74 @@ Requires
 */
 require_once 'functions/functions.php';
 
-add_filter('query_vars','tweet_add_trigger');
-function tweet_add_trigger($vars) {
-    $vars[] = 'tweety_auth';
+register_activation_hook( __FILE__, 'wtf_activate' );
+function wtf_activate(){
+	$version = wtf_get_version();
+
+	//get last stored version if there
+	$lastVersion = get_option('wtf_version');
+
+	//no last stored version so we start versioning now.
+	if (empty($lastVersion)){
+		$lastVersion = '1.0.2';
+	}
+
+	//if current version greater then last stored version AND current version matches this update routine we continue
+	//this prevents the update routine from running every time a higher version is activated
+	if ( $version > $lastVersion && $version == '2.0.0'){
+		//ensure the version is stored in wp option for future use
+		update_option('wtf_version', $version);
+
+		$username = get_option('tweety_screenname');
+
+		//transfer options
+		update_option('wtf_screenname', $username );
+		update_option('wtf_consumer_key', get_option('tweety_consumer_key') );
+		update_option('wtf_consumer_secret', get_option('tweety_consumer_secret') );
+		update_option('wtf_token_array', get_option('tweety_token_array') );
+
+		//delete options
+		delete_option('tweety_interval');
+		delete_option('tweety_'.$username.'_id');
+		delete_option('tweety_screenname');
+		delete_option('tweety_consumer_key');
+		delete_option('tweety_consumer_secret');
+		delete_option('tweety_request_array');
+		delete_option('tweety_token_array');
+		delete_option('twitter_flushrefresh_status');
+
+		//clean old post type
+		$oldposts = get_posts( array( 'post_type' => 'twitter', 'numberposts' => -1) );
+		if (is_array($oldposts)) {		
+			foreach( $oldposts as $oldpost ) {
+				wp_delete_post( $oldpost->ID, true);
+	   		}
+   		}
+	}
+}
+
+
+
+add_filter('query_vars','wtf_add_trigger');
+function wtf_add_trigger($vars) {
+    $vars[] = 'wtf_auth';
     return $vars;
 }
 
-add_action('template_redirect', 'tweet_trigger_check');
+add_action('template_redirect', 'wtf_trigger_check');
 
-function tweet_trigger_check() {
-	if (get_query_var('tweety_auth') == 1) {
+function wtf_trigger_check() {
+	if (get_query_var('wtf_auth') == 1) {
 		include 'functions/oauth/twitteroauth.php';
-		$consumer_key = $_POST['consumer_key'];
-		$consumer_secret = $_POST['consumer_secret'];
+		$consumer_key = $_POST['wtf_consumer_key'];
+		$consumer_secret = $_POST['wtf_consumer_secret'];
 		
 		//store consumer key and secret
-		update_option('tweety_consumer_key', $consumer_key);
-		update_option('tweety_consumer_secret', $consumer_secret);
+		update_option('wtf_consumer_key', $consumer_key);
+		update_option('wtf_consumer_secret', $consumer_secret);
 		
 		//set call back url to make it come back to this site for final auth steps
-		$oauth_callback = get_home_url().'/?tweety_auth=2';
+		$oauth_callback = get_home_url().'/?wtf_auth=2';
 		
 		//connect to twitter to get our auth request token
 		$connection = new TwitterOAuth($consumer_key, $consumer_secret);
@@ -49,7 +97,7 @@ function tweet_trigger_check() {
 		'request_token_secret'=>$twitter_request_token_secret
 		);
 	
-		update_option('tweety_request_array', $token_request_array);
+		update_option('wtf_request_array', $token_request_array);
 		
 		//get auth url and send user to it 
 		$authenticateUrl = $connection->getAuthorizeURL($twitter_request_token);
@@ -57,28 +105,28 @@ function tweet_trigger_check() {
 		exit;
 	}
 	// Twitter returns user here from auth url to finish authorization
-	if (get_query_var('tweety_auth') == 2) {
+	if (get_query_var('wtf_auth') == 2) {
 		include 'functions/authorize.php';
 		exit;
 	}
 }
 
-function tweet_plugin_menu() {
-	add_submenu_page( 'options-general.php', 'Twitter', 'Twitter', 'manage_options', 'twitter', 'tweet_menu_main' );
+function wtf_plugin_menu() {
+	add_submenu_page( 'options-general.php', 'Twitter', 'Twitter', 'manage_options', 'wtf-twitter', 'wtf_menu_main' );
 }
-add_action('admin_menu', 'tweet_plugin_menu');
+add_action('admin_menu', 'wtf_plugin_menu');
 
-function tweet_menu_main(){
+function wtf_menu_main(){
 	include 'pages/main_menu.php';
 }
 
 
 //CRON
-add_action( 'twitter_auto', 'twitter_update_auto' );
+add_action( 'wtf_auto', 'wtf_update_auto' );
 
 //create custom schedule for every 5 mins
-add_filter( 'cron_schedules', 'twitter_5mins');
-function twitter_5mins($schedules) { 
+add_filter( 'cron_schedules', 'wtf_5mins');
+function wtf_5mins($schedules) { 
     $schedules['minutes_5'] = array(
 	'interval'=>300, 
 	'display'=>'5 minutes'
@@ -87,7 +135,7 @@ function twitter_5mins($schedules) {
 }
 //end CRON
 
-function twitter_register_post_type() {
+function wtf_register_post_type() {
   $labels = array(
     'name' => 'Tweets',
     'singular_name' => 'Tweet',
@@ -119,10 +167,10 @@ function twitter_register_post_type() {
     'supports' => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
   ); 
 
-  register_post_type( 'twitter', $args );
+  register_post_type( 'wtf_twitter', $args );
   flush_rewrite_rules();
 }
-add_action( 'init', 'twitter_register_post_type' );
+add_action( 'init', 'wtf_register_post_type' );
 
 if (is_admin()) { // note the use of is_admin() to double check that this is happening in the admin
 	
@@ -141,4 +189,13 @@ if (is_admin()) { // note the use of is_admin() to double check that this is hap
         'access_token' => '',
     );
     new WP_GitHub_Updater($config);
+}
+
+
+function wtf_get_version() {
+	if ( ! function_exists( 'get_plugins' ) )
+		require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+	$plugin_folder = get_plugins( '/' . plugin_basename( dirname( __FILE__ ) ) );
+	$plugin_file = basename( ( __FILE__ ) );
+	return $plugin_folder[$plugin_file]['Version'];
 }

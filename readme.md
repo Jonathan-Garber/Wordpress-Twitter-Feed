@@ -35,6 +35,14 @@ A: Please be sure that you have assigned a "Callback URL" to your plugin. Wordpr
 Version History
 ===
 
+2.0.0
+
+* Adjusted post type to avoid any potential conflicts with other plugins
+
+* Prefixed functions and option names better to avoid clashes
+
+* Fixed a major bug with the manual refresh not properly updating. It was brining in duplicates
+
 1.0.2
 
 * Added new information to the readme file. Cleaned up repo some.
