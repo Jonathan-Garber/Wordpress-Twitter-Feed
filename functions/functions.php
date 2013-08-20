@@ -206,7 +206,6 @@ function wtf_tweet($limit) {
 	$token_secret = $wtf_token_array[token_secret];
 	
 	$last_id = get_option('wtf_last_id');
-	echo $last_id.'<br/><br/>';
 
 $to = new TwitterOAuth($consumer_key, $consumer_secret, $token, $token_secret);
 	//if last id not empty we know this username has been called for feed before

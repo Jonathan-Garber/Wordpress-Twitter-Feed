@@ -24,41 +24,8 @@ function wtf_activate(){
 
 	//no last stored version so we start versioning now.
 	if (empty($lastVersion)){
-		$lastVersion = '1.0.2';
-	}
-
-	//if current version greater then last stored version AND current version matches this update routine we continue
-	//this prevents the update routine from running every time a higher version is activated
-	if ( $version > $lastVersion && $version == '2.0.0'){
-		//ensure the version is stored in wp option for future use
-		update_option('wtf_version', $version);
-
-		$username = get_option('tweety_screenname');
-
-		//transfer options
-		update_option('wtf_screenname', $username );
-		update_option('wtf_consumer_key', get_option('tweety_consumer_key') );
-		update_option('wtf_consumer_secret', get_option('tweety_consumer_secret') );
-		update_option('wtf_token_array', get_option('tweety_token_array') );
-
-		//delete options
-		delete_option('tweety_interval');
-		delete_option('tweety_'.$username.'_id');
-		delete_option('tweety_screenname');
-		delete_option('tweety_consumer_key');
-		delete_option('tweety_consumer_secret');
-		delete_option('tweety_request_array');
-		delete_option('tweety_token_array');
-		delete_option('twitter_flushrefresh_status');
-
-		//clean old post type
-		$oldposts = get_posts( array( 'post_type' => 'twitter', 'numberposts' => -1) );
-		if (is_array($oldposts)) {		
-			foreach( $oldposts as $oldpost ) {
-				wp_delete_post( $oldpost->ID, true);
-	   		}
-   		}
-	}
+		$lastVersion = $version
+	}	
 }
 
 

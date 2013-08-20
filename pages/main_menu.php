@@ -92,6 +92,7 @@ if( !wp_next_scheduled( 'wtf_auto' ) ) {
 
 $wtf_log = get_option('wtf_flushrefresh_status');
 $screenname = get_option('wtf_screenname');
+$lastVersion = get_option('wtf_version');
 ?>
 
 <div class="wrap">
@@ -99,6 +100,7 @@ $screenname = get_option('wtf_screenname');
 	<div class="title">
 		<div id="icon-options-general" class="icon32"></div>
 		<h2>Wordpress Twitter Feed</h2>
+		<small>Version: <? echo $lastVersion ?></small>
 	</div>
 	
 	<p>This plugin will allow you to easily link to your own Twitter Application & authorize it for access to any twitter account.</p>
