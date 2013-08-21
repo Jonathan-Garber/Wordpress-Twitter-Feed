@@ -6,7 +6,7 @@
 	Description: Custom plugin to pull in your Twitter Feed
 	Author: Jonathan-Garber
 	Author URI: http://github.com/Jonathan-Garber
-	Version: 2.0.1
+	Version: 2.0.2
 
 */
 
@@ -49,7 +49,7 @@ function wtf_trigger_check() {
 		update_option('wtf_consumer_secret', $consumer_secret);
 		
 		//set call back url to make it come back to this site for final auth steps
-		$oauth_callback = get_home_url().'/?wtf_auth=2';
+		$oauth_callback = site_url().'/?wtf_auth=2';
 		
 		//connect to twitter to get our auth request token
 		$connection = new TwitterOAuth($consumer_key, $consumer_secret);

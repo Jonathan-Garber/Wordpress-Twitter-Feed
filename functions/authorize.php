@@ -27,6 +27,6 @@ update_option('wtf_token_array', $wtf_token_array);
 update_option('wtf_screenname', $screenname);
 
 //send user to main Twitter Plugin Page
-$return_url = get_home_url().'/wp-admin/options-general.php?page=wtf-twitter&auth=1';
+$return_url = site_url().'/wp-admin/options-general.php?page=wtf-twitter&auth=1';
 header("Location: $return_url");
 ?>
