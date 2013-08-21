@@ -14,9 +14,9 @@ Features
 ===
 1. Automatic tweet updating with a 5 minute interval using wp_cron
 
-2. Display raw status data using function tweet_raw_tweets();
+2. Display raw status data using function wtf_raw_tweets();
 
-3. Display simple list of tweets with user icon and status using function tweet_show_tweets();
+3. Display simple list of tweets with user icon and status using function wtf_show_tweets();
 
 ===
 FAQ
